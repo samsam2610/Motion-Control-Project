@@ -28,19 +28,9 @@ for indexName = 1:length(VIDEO_NAMES)
     VIDEO_NAMES(indexName) = VIDEO_NAMES(indexName) + "_" + TIME_START;
 end
 
-%% Setup trigger object
-deviceObject = daq('ni');
-
-deviceObject.Rate = DAQ_RATE; % Set acquisition rate, in scans/second
-deviceName = DAQ_DEVICE_NAME; % Set the device name
-unitName = DAQ_UNIT_NAME; % Unit of the measurement
-channelNumbers = DAQ_CHANNEL; % Channel to record
-
-for index = 1:length(channelNumbers)
-    channelNumber = channelNumbers(index);
-    channel = addinput(deviceObject, deviceName, "ai" + num2str(channelNumber), unitName);
-    channel.TerminalConfig = 'SingleEnded';
-end
+%% Setup TDT connection
+addpath(genpath('C:\TDT\TDTMatlabSDK'));
+syn = SynapseAPI('localhost');
 
 %% Setup camera object
 % Create connection to the device using the specified adaptor with the specified 
@@ -123,9 +113,16 @@ while (1)
 end
 beta = 1;
 
-% send trigger info to the camera to start capturing
-deviceObject.ScansAvailableFcn = @(src,event) triggerDetect(src, deviceObject, triggerStatus_1, triggerStatus_2);
-start(deviceObject, 'continuous');
+% Read the pulse from TDT info to the camera to start capturing
+while (1)
+    params = syn.getParameterValue('PulseGen1', 'out_FloatOut');
+    if params > 1
+        datetime_current = datetime('now', 'Format','dd-MMM-yyyy HH:mm:ss.SSSSSSSSS');
+        send(triggerStatus_1, datetime_current);
+        send(triggerStatus_2, datetime_current);
+        break
+    end
+end
 
 wait(f)
 
