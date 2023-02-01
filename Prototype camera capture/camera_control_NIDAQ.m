@@ -20,7 +20,7 @@ VIDEO_FRAMERATE = 200; % fps
 VIDEO_WIDTH = 785; 
 VIDEO_HEIGHT = 232;
 
-TIME_TABLE_OFFSET = 0.1; % offset 0 to a percentage of framerate
+TIME_TABLE_OFFSET = 0.1; % offset 0 to a percentage of framerate - guessed number - not sure
 
 VIDEO_EXPORT = true;
 VIDEO_NAMES = ["Camera_1", "Camera_2"];
@@ -77,12 +77,34 @@ sample_count = frame_rate * time_record;
 time_table_promise = 0:1/frame_rate:(time_record);
 time_table_promise = time_table_promise + TIME_TABLE_OFFSET*1/frame_rate;
 
+
+% set the pollable triggers to send to workers for start capturing signal 
 triggerUpdate_1 = parallel.pool.PollableDataQueue;
 triggerUpdate_2 = parallel.pool.PollableDataQueue;
 
+% set the pollable termination signal to send to workers to terminating the capturing process
+terminationUpdate_1 = parallel.pool.PollableDataQueue;
+terminationUpdate_2 = parallel.pool.PollableDataQueue;
+
+% Start the workers and send the parameters
 f(1:2) = parallel.FevalFuture;
-f(1) = parfeval(@captureImage, 2, videoObject_1, triggerUpdate_1, frame_rate, time_record, time_table_promise);
-f(2) = parfeval(@captureImage, 2, videoObject_2, triggerUpdate_2, frame_rate, time_record, time_table_promise);
+f(1) = parfeval(@captureImage, ... % name of the function to send to the worker
+                2, ... % number of expecting outputs
+                videoObject_1, ...
+                triggerUpdate_1, ...
+                terminationUpdate_1, ...
+                frame_rate, ...
+                time_record, ...
+                time_table_promise);
+
+f(2) = parfeval(@captureImage, ... % name of the function to send to the worker
+                2, ... % number of expecting outputs
+                videoObject_2, ...
+                triggerUpdate_2, ...
+                terminationUpdate_2, ...
+                frame_rate, ...
+                time_record, ...
+                time_table_promise);
 
 % Acquire pollable triggers from the cores
 pause(2)
