@@ -4,19 +4,17 @@ function [time_table, snapshot_store] =  saveCaptureImage(videoObject, ...
                                                       terminationUpdate, ...
                                                       frame_rate, ...
                                                       time_table_promise, ...
-                                                      video_name, ...
-                                                      video_name_path)
+                                                      video_name)
 
     time_record = 3600; % 1 hour of recording maximum
-    time_buffer = 10; % second
-    buffer_size = time_buffer*frame_rate;
     time_table = cell(time_record * frame_rate, 9);
     snapshot_store = uint8(zeros(232, 784));
     ncount = 0;    
     
     % Prepare the video file
-    video_name_file = video_name_path + ".avi";
-    videoExport = VideoWriter(video_name_file, 'Grayscale AVI'); 
+    video_name_file = video_name + ".avi";
+    videoExport = VideoWriter(video_name_file, 'Motion JPEG AVI'); 
+    videoExport.Quality = 85;
     videoExport.FrameRate = frame_rate;
     open(videoExport); 
 
@@ -75,7 +73,7 @@ function [time_table, snapshot_store] =  saveCaptureImage(videoObject, ...
         time_start_sys = toc;
 
         [snapshot_store, metadata] = getsnapshot(videoObject);
-        writeVideo(videoExport, snapshot_store);
+        writeVideo(videoExport, mat2gray(snapshot_store(1:2:end, 1:2:end)));
 
         time_previous = time_start;
         time_start = datetime(metadata.AbsTime, 'Format','dd-MMM-yyyy HH:mm:ss.SSSSSSSSS');
