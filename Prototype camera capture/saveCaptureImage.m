@@ -15,9 +15,9 @@ function [time_table, snapshot_store] =  saveCaptureImage(videoObject, ...
     ncount = 0;    
     
     % Prepare the video file
-    video_name_file = video_name_path + ".avi";
-    videoExport = VideoWriter(video_name_file, 'Grayscale AVI'); 
-    videoExport.FrameRate = frame_rate;
+    video_name_file = video_name_path + ".mp4";
+    videoExport = VideoWriter(video_name_file, 'MPEG-4'); 
+    videoExport.FrameRate = 30;
     open(videoExport); 
 
     % Send back the pollable termination status to the main core
@@ -75,7 +75,7 @@ function [time_table, snapshot_store] =  saveCaptureImage(videoObject, ...
         time_start_sys = toc;
 
         [snapshot_store, metadata] = getsnapshot(videoObject);
-        writeVideo(videoExport, snapshot_store);
+%         writeVideo(videoExport, snapshot_store);
 
         time_previous = time_start;
         time_start = datetime(metadata.AbsTime, 'Format','dd-MMM-yyyy HH:mm:ss.SSSSSSSSS');

@@ -27,7 +27,9 @@ TIME_TABLE_OFFSET = 0.1; % offset 0 to a percentage of framerate - guessed numbe
 VIDEO_EXPORT = true;
 VIDEO_NAMES = ["Camera_1", "Camera_2"];
 VIDEO_NAME_PATH = ["C:\Users\sqt3245\Dropbox\Tresch Lab\MotionControlProject\Prototype camera capture\Camera_1", ...
-                    "E:\Test 2\Camera_2"]
+                    "E:\Test 2\Camera_2"];
+% VIDEO_NAME_PATH = ["C:\Users\sqt3245\Dropbox\Tresch Lab\MotionControlProject\Prototype camera capture\Camera_1", ...
+%                     "C:\Users\sqt3245\Dropbox\Tresch Lab\MotionControlProject\Prototype camera capture\Camera_2"];
 for indexName = 1:length(VIDEO_NAMES)
     VIDEO_NAMES(indexName) = VIDEO_NAMES(indexName) + "_" + TIME_START;
 end
