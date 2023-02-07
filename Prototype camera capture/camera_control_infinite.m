@@ -18,7 +18,7 @@ CAMERA_EXPOSURE = 1/2^9;
 CAMERA_GAIN = 22;
 CAMERA_FRAMERATE = 200;
 
-VIDEO_TIME_RECORD = 3600; % seconds
+VIDEO_TIME_RECORD = 30; % seconds
 VIDEO_FRAMERATE = 200; % fps
 VIDEO_WIDTH = 785; 
 VIDEO_HEIGHT = 232;
@@ -181,6 +181,7 @@ case 'TDT'
             datetime_current = datetime('now', 'Format','dd-MMM-yyyy HH:mm:ss.SSSSSSSSS');
             send(triggerStatus_1, datetime_current);
             send(triggerStatus_2, datetime_current);
+            current_running_time = tic;
             break
         end
     end
@@ -189,11 +190,11 @@ case 'NIDAQ'
     % send trigger info to the camera to start capturing
     deviceObject.ScansAvailableFcn = @(src,event) triggerDetect(src, deviceObject, triggerStatus_1, triggerStatus_2);
     start(deviceObject, 'continuous');
-
+    current_running_time = tic;
 end
 
 
-current_running_time = toc;
+
 while current_running_time < VIDEO_TIME_RECORD
     current_running_time = toc;
     % Check to see if the cancel button was pressed.
