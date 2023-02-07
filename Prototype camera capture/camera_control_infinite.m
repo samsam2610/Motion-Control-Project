@@ -40,8 +40,8 @@ case 'Dell'
                        "E:\Test 2\Camera_2"];
 
 case 'Karen'
-    VIDEO_NAME_PATH = ["C:\Users\sqt3245\test\Camera_1", ...
-                       "D:\test"];
+    VIDEO_NAME_PATH = ["D:\test\Camera_1", ...
+                       "D:\test\Camera_2"];
 end
 
 %% Setup TDT/NIDAQ connection
@@ -217,4 +217,9 @@ delete(videoObject_1)
 delete(videoObject_2)
 delete(imaqfind)
 clear videoObject_1 videoObject_2
+
+%%
+disp(1/mean(cell2mat(time_table_1(:, 9))))
+disp(1/mean(cell2mat(time_table_2(:, 9))))
+disp(cell2mat(time_table_1(end, 7)));
 
