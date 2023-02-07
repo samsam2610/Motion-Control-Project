@@ -5,7 +5,8 @@
 TIME_START = string(datetime('now', 'Format','dd_MMM_yyyy-HH_mm_ss'));
 
 %% Setting parameters
-SYSTEM_NAME = 'NIDAQ'; % type "NIDAQ" or "TDT" for trigger type
+SYSTEM_NAME = 'TDT'; % type "NIDAQ" or "TDT" for trigger type
+COMPUTER_NAME = 'Karen'; % type "Karen" or "Dell" for testing paths
 
 DAQ_RATE = 1000;
 DAQ_CHANNEL = [1];
@@ -26,12 +27,21 @@ TIME_TABLE_OFFSET = 0.1; % offset 0 to a percentage of framerate - guessed numbe
 
 VIDEO_EXPORT = true;
 VIDEO_NAMES = ["Camera_1", "Camera_2"];
-VIDEO_NAME_PATH = ["C:\Users\sqt3245\Dropbox\Tresch Lab\MotionControlProject\Prototype camera capture\Camera_1", ...
-                    "E:\Test 2\Camera_2"];
-% VIDEO_NAME_PATH = ["C:\Users\sqt3245\Dropbox\Tresch Lab\MotionControlProject\Prototype camera capture\Camera_1", ...
-%                     "C:\Users\sqt3245\Dropbox\Tresch Lab\MotionControlProject\Prototype camera capture\Camera_2"];
+
+
 for indexName = 1:length(VIDEO_NAMES)
     VIDEO_NAMES(indexName) = VIDEO_NAMES(indexName) + "_" + TIME_START;
+end
+
+%% Setup video name path based on computer
+switch COMPUTER_NAME
+case 'Dell'
+    VIDEO_NAME_PATH = ["C:\Users\sqt3245\Dropbox\Tresch Lab\MotionControlProject\Prototype camera capture\Camera_1", ...
+                       "E:\Test 2\Camera_2"];
+
+case 'Karen'
+    VIDEO_NAME_PATH = ["C:\Users\sqt3245\test\Camera_1", ...
+                       "D:\test"];
 end
 
 %% Setup TDT/NIDAQ connection

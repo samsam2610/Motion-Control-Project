@@ -75,7 +75,7 @@ function [time_table, snapshot_store] =  saveCaptureImage(videoObject, ...
         time_start_sys = toc;
 
         [snapshot_store, metadata] = getsnapshot(videoObject);
-%         writeVideo(videoExport, snapshot_store);
+        writeVideo(videoExport, snapshot_store);
 
         time_previous = time_start;
         time_start = datetime(metadata.AbsTime, 'Format','dd-MMM-yyyy HH:mm:ss.SSSSSSSSS');
