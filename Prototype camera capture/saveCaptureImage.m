@@ -45,8 +45,13 @@ function [time_table, snapshot_store] =  saveCaptureImage(videoObject, ...
     time_intial = time_table_promise(1);
     index_promise = 1;
     index_skip = false;
-    WAIT_FACTOR = 0.85;
+    WAIT_FACTOR = 1;
     start(videoObject);
+    [snapshot_store, metadata] = getsnapshot(videoObject);       
+%         writeVideo(videoExport, snapshot_store);
+
+    time_previous = time_start;
+    time_start = datetime(metadata.AbsTime, 'Format','dd-MMM-yyyy HH:mm:ss.SSSSSSSSS');
     tic
     time_start_sys = toc;
 
@@ -54,7 +59,7 @@ function [time_table, snapshot_store] =  saveCaptureImage(videoObject, ...
     while (1)
 
         ncount = ncount + 1;
-        if mod(ncount+1, 500)  % Prevent memory leak.
+        if mod(ncount+1, 2000)  % Prevent memory leak.
             flushdata(videoObject); 
         end
         
@@ -67,15 +72,21 @@ function [time_table, snapshot_store] =  saveCaptureImage(videoObject, ...
         % 
         time_current_sys = toc;
         time_wait = (next_frame - time_current_sys)*WAIT_FACTOR;
-        if time_wait > 0
-            pause(time_wait);
+        a = toc;
+        while (1) 
+            b = toc;
+            if (b-a) > time_wait
+                break
+            end
         end
 
         time_previous_sys = time_start_sys;
         time_start_sys = toc;
+        next_frame = max([next_frame + 1/frame_rate, time_start_sys + 0.5/frame_rate]);
 
+        trigger(videoObject)
         [snapshot_store, metadata] = getsnapshot(videoObject);
-        writeVideo(videoExport, snapshot_store);
+%         writeVideo(videoExport, snapshot_store);
 
         time_previous = time_start;
         time_start = datetime(metadata.AbsTime, 'Format','dd-MMM-yyyy HH:mm:ss.SSSSSSSSS');
@@ -90,7 +101,6 @@ function [time_table, snapshot_store] =  saveCaptureImage(videoObject, ...
                                         time2num(time_start-time_previous) % metadata time between frames 
                                         };
 
-        next_frame = max([next_frame + 1/frame_rate, time_start_sys + 1/frame_rate]);
        
         index_promise = index_promise + 1;
         index_skip = false;

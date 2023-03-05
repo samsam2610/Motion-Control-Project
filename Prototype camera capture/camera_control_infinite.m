@@ -5,8 +5,8 @@
 TIME_START = string(datetime('now', 'Format','dd_MMM_yyyy-HH_mm_ss'));
 
 %% Setting parameters
-SYSTEM_NAME = 'TDT'; % type "NIDAQ" or "TDT" for trigger type
-COMPUTER_NAME = 'Karen'; % type "Karen" or "Dell" for testing paths
+SYSTEM_NAME = 'NIDAQ'; % type "NIDAQ" or "TDT" for trigger type
+COMPUTER_NAME = 'Dell'; % type "Karen" or "Dell" for testing paths
 
 DAQ_RATE = 1000;
 DAQ_CHANNEL = [1];
@@ -78,7 +78,7 @@ delete(imaqfind)
 videoObject_1 = videoinput('tisimaq_r2013_64', '1', CAMERA_PROFILE);
 videoObject_1.ReturnedColorspace = "grayscale";
 % videoObject_1.ROIPosition =  [239 535 785 232];
-videoObject_1.ROIPosition =  [428 630 VIDEO_WIDTH VIDEO_HEIGHT];
+videoObject_1.ROIPosition =  [495 351 VIDEO_WIDTH VIDEO_HEIGHT];
 triggerconfig(videoObject_1, 'manual');
 set(videoObject_1,'TriggerRepeat', inf);
 set(videoObject_1,'FramesPerTrigger', 1);
@@ -89,7 +89,7 @@ src.FrameRate = CAMERA_FRAMERATE;
 
 videoObject_2 = videoinput('tisimaq_r2013_64', '2', CAMERA_PROFILE);
 videoObject_2.ReturnedColorspace = "grayscale";
-videoObject_2.ROIPosition =  [445 760 VIDEO_WIDTH VIDEO_HEIGHT];
+videoObject_2.ROIPosition =  [0 135 VIDEO_WIDTH VIDEO_HEIGHT];
 triggerconfig(videoObject_2, 'manual');
 set(videoObject_2,'TriggerRepeat', inf);
 set(videoObject_2,'FramesPerTrigger', 1);
@@ -190,9 +190,9 @@ case 'NIDAQ'
     % send trigger info to the camera to start capturing
     deviceObject.ScansAvailableFcn = @(src,event) triggerDetect(src, deviceObject, triggerStatus_1, triggerStatus_2);
     start(deviceObject, 'continuous');
-    current_running_time = tic;
+    
 end
-
+current_running_time = toc;
 
 
 while current_running_time < VIDEO_TIME_RECORD
