@@ -5,3 +5,6 @@
 *.txt
 *.mj2
 *.asv
+*.txt
+*.DS_Store
+/stuffs/
